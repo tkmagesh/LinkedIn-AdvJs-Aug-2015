@@ -5,6 +5,22 @@
     <title>Calculator - 1</title>
     <script>
         window.addEventListener("DOMContentLoaded", init);
+        var calculator = {
+            add : function(n1, n2){
+                return n1 + n2;
+            },
+            subtract : function(n1, n2){
+                return n1 - n2;
+            },
+            multiply : function(n1, n2){
+                return n1 * n2;
+            },
+            divide : function(n1, n2){
+                return n1 / n2;
+            }
+        };
+
+
         var txtNumber1 = null,
             txtNumber2 = null;
         function init(){
@@ -18,24 +34,10 @@
         };
 
         function onCalculate(evt){
-            var btnValue = evt.srcElement.value;
+            var operation = evt.srcElement.getAttribute("data-operation");
             var number1 = parseInt(txtNumber1.value,10),
                 number2 = parseInt(txtNumber2.value, 10);
-
-            switch (btnValue) {
-                case "Add":
-                    result = number1 + number2;
-                    break;
-                case "Subtract":
-                    result = number1 - number2;
-                    break;
-                case "Multiply":
-                    result = number1 * number2;
-                    break;
-                case "Divide":
-                    result = number1 / number2;
-                    break;
-            }
+            var result = calculator[operation](number1, number2);
             document.getElementById("divResult").innerHTML = result;
 
         }
@@ -47,10 +49,10 @@
     <input type="text" name="" id="txtNumber1">
     <input type="text" name="" id="txtNumber2">
     <br>
-    <input type="button" value="Add" id="btnAdd">
-    <input type="button" value="Subtract" id="btnSubtract">
-    <input type="button" value="Multiply" id="btnMultiply">
-    <input type="button" value="Divide" id="btnDivide">
+    <input type="button" value="Add" id="btnAdd" data-operation="add">
+    <input type="button" value="Subtract" id="btnSubtract" data-operation="subtract">
+    <input type="button" value="Multiply" id="btnMultiply" data-operation="multiply">
+    <input type="button" value="Divide" id="btnDivide" data-operation="divide">
     <div id="divResult">[Result goes here]</div>
 </body>
 </html>

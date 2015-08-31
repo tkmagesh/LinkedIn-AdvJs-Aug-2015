@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator - 1</title>
+    <script>
+        window.addEventListener("DOMContentLoaded", init);
+        var calculator = {
+            add : function(n1, n2){
+                return n1 + n2;
+            },
+            subtract : function(n1, n2){
+                return n1 - n2;
+            },
+            multiply : function(n1, n2){
+                return n1 * n2;
+            },
+            divide : function(n1, n2){
+                return n1 / n2;
+            }
+        };
+
+
+        var txtNumber1 = null,
+            txtNumber2 = null;
+        function init(){
+            document.getElementById("btnAdd").addEventListener("click", getOperatorFor("add"));
+            document.getElementById("btnSubtract").addEventListener("click", getOperatorFor("subtract"));
+            document.getElementById("btnMultiply").addEventListener("click", getOperatorFor("multiply"));
+            document.getElementById("btnDivide").addEventListener("click", getOperatorFor("divide"));
+
+            txtNumber1 = document.getElementById("txtNumber1");
+            txtNumber2 = document.getElementById("txtNumber2");
+        };
+
+        function getOperatorFor(operation){
+            return function onCalculate(evt){
+                var number1 = parseInt(txtNumber1.value,10),
+                    number2 = parseInt(txtNumber2.value, 10);
+                var result = calculator[operation](number1, number2);
+                document.getElementById("divResult").innerHTML = result;
+
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    <input type="text" name="" id="txtNumber1">
+    <input type="text" name="" id="txtNumber2">
+    <br>
+    <input type="button" value="Add" id="btnAdd" >
+    <input type="button" value="Subtract" id="btnSubtract" >
+    <input type="button" value="Multiply" id="btnMultiply" >
+    <input type="button" value="Divide" id="btnDivide" >
+    <div id="divResult">[Result goes here]</div>
+</body>
+</html>

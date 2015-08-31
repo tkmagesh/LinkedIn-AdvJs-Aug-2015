@@ -5,6 +5,22 @@
     <title>Calculator - 1</title>
     <script>
         window.addEventListener("DOMContentLoaded", init);
+        var calculator = {
+            Add : function(n1, n2){
+                return n1 + n2;
+            },
+            Subtract : function(n1, n2){
+                return n1 - n2;
+            },
+            Multiply : function(n1, n2){
+                return n1 * n2;
+            },
+            Divide : function(n1, n2){
+                return n1 / n2;
+            }
+        };
+
+
         var txtNumber1 = null,
             txtNumber2 = null;
         function init(){
@@ -20,22 +36,8 @@
         function onCalculate(evt){
             var btnValue = evt.srcElement.value;
             var number1 = parseInt(txtNumber1.value,10),
-                number2 = parseInt(txtNumber2.value, 10);
-
-            switch (btnValue) {
-                case "Add":
-                    result = number1 + number2;
-                    break;
-                case "Subtract":
-                    result = number1 - number2;
-                    break;
-                case "Multiply":
-                    result = number1 * number2;
-                    break;
-                case "Divide":
-                    result = number1 / number2;
-                    break;
-            }
+                number2 = parseInt(txtNumber2.value, 10)
+            var result = calculator[btnValue](number1, number2);
             document.getElementById("divResult").innerHTML = result;
 
         }
