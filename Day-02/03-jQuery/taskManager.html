@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <script>
+    /*Use cases*/
+    /*
+    1. Manage a list of tasks
+    2. Add a new task
+    3. Toggle the completion status of one or more tasks
+    4. Remove completed tasks
+    5. Persist the task in the local storage
+
+    */
+    </script>
+    <style>
+        .completed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        li{
+            cursor: pointer;
+        }
+    </style>
+    <script src="jquery-1.11.3.js"></script>
+    <script>
+    (function(){
+        $(init);
+        var $olTaskList = null;
+        function init(){
+            $("#btnAddTask").click(onBtnAddTaskClick);
+            $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
+            $olTaskList = $("#olTaskList");
+            $("#olTaskList > li").click(onTaskItemClick);
+
+        }
+        function onBtnAddTaskClick(){
+            var taskName = $("#txtTask").val();
+            var $newTask = $("<li></li>");
+            $newTask.html(taskName);
+            $newTask.click(onTaskItemClick);
+            $olTaskList.append($newTask);
+        }
+        function onTaskItemClick(evt){
+            $(this).toggleClass("completed");
+        }
+
+        function onBtnRemoveCompletedClick(){
+            /*var completedTasks = document.getElementsByClassName("completed");
+            for(var i=completedTasks.length-1; i>=0; i--)
+                completedTasks[i].remove();*/
+
+            for(var i=olTaskList.children.length-1; i>=0; i--){
+                var taskItem = olTaskList.children[i];
+                if (taskItem.classList.contains("completed"))
+                    taskItem.remove();
+            }
+        }
+    })();
+    </script>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <div class="completed">10</div>
+    <div class="content">
+        <label for="">Task :</label>
+        <input type="text" name="" id="txtTask">
+        <input type="button" value="Add Task" id="btnAddTask">
+        <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+        <ol id="olTaskList">
+            <li>Watch a movie</li>
+            <li class="completed">Explore Bangalore</li>
+            <li>Fix THAT bug</li>
+        </ol>
+    </div>
+</body>
+</html>
