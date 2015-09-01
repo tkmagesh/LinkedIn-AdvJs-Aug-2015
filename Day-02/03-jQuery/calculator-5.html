@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator - 1</title>
+    <script src="jquery-1.11.3.js"></script>
+    <script>
+        $(init);
+
+        var $txtNumber1 = null,
+            $txtNumber2 = null;
+        function init(){
+            $("#btnAdd").click(getOperatorFor("+"));
+            $("#btnSubtract").click( getOperatorFor("-"));
+            $("#btnMultiply").click( getOperatorFor("*"));
+            $("#btnDivide").click( getOperatorFor("/"));
+
+            $txtNumber1 = $("#txtNumber1");
+            $txtNumber2 = $("#txtNumber2");
+        };
+
+        function getOperatorFor(operation){
+            return function onCalculate(evt){
+                var number1 = parseInt($txtNumber1.val(),10),
+                    number2 = parseInt($txtNumber2.val(), 10);
+                var expr = number1 + operation + number2;
+                var result = eval(expr);
+                $("#divResult").html(result);
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    <input type="text" name="" id="txtNumber1">
+    <input type="text" name="" id="txtNumber2">
+    <br>
+    <input type="button" value="Add" id="btnAdd" >
+    <input type="button" value="Subtract" id="btnSubtract" >
+    <input type="button" value="Multiply" id="btnMultiply" >
+    <input type="button" value="Divide" id="btnDivide" >
+    <div id="divResult">[Result goes here]</div>
+</body>
+</html>
