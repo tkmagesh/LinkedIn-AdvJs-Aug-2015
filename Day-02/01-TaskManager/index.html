@@ -26,6 +26,7 @@
         }
     </style>
     <script>
+    (function(){
         window.addEventListener("DOMContentLoaded", init);
         var olTaskList = null;
         function init(){
@@ -64,7 +65,7 @@
                     taskItem.remove();
             }
         }
-
+    })();
     </script>
 </head>
 <body>
