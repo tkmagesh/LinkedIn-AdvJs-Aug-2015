@@ -24,40 +24,56 @@
         li{
             cursor: pointer;
         }
+        #divMessages{
+            position: absolute;
+            bottom: 0px;
+            right : 0px;
+            padding: 10px;
+        }
+        .message{
+            border : 1px solid gray;
+            background-color: #e7e7e7;
+            padding: 5px;
+            border-radius: 5px;
+        }
     </style>
     <script src="jquery-1.11.3.js"></script>
     <script>
     (function(){
-        $(init);
-        var $olTaskList = null;
-        function init(){
-            $("#btnAddTask").click(onBtnAddTaskClick);
+        $(function init(){
+            $("#btnAddTask").on("click", onBtnAddTaskClick);
             $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
-            $olTaskList = $("#olTaskList");
-            $("#olTaskList > li").click(onTaskItemClick);
-
-        }
+            //$("#olTaskList").delegate("li","click",onTaskItemClick);
+            $("#olTaskList").on("click","li",onTaskItemClick);
+        })
         function onBtnAddTaskClick(){
-            var taskName = $("#txtTask").val();
-            var $newTask = $("<li></li>");
-            $newTask.html(taskName);
-            $newTask.click(onTaskItemClick);
-            $olTaskList.append($newTask);
+            $("<li></li>")
+                .html($("#txtTask").val())
+                .prependTo("#olTaskList")
+                .hide()
+                .slideDown('slow');
+            displayMessage("A new task is added");
         }
         function onTaskItemClick(evt){
             $(this).toggleClass("completed");
         }
 
         function onBtnRemoveCompletedClick(){
-            /*var completedTasks = document.getElementsByClassName("completed");
-            for(var i=completedTasks.length-1; i>=0; i--)
-                completedTasks[i].remove();*/
-
-            for(var i=olTaskList.children.length-1; i>=0; i--){
-                var taskItem = olTaskList.children[i];
-                if (taskItem.classList.contains("completed"))
-                    taskItem.remove();
-            }
+            $("#olTaskList > li.completed").fadeOut(function(){
+                $(this).remove();
+            });
+            displayMessage("Zero or more completed tasks are removed");
+        }
+        function displayMessage(msg){
+            $("<div class='message'></div>")
+                .html(msg)
+                .hide()
+                .appendTo("#divMessages")
+                .slideDown('slow')
+                .delay(3000)
+                .fadeOut('fast', function(){
+                    $(this).remove();
+                });
         }
     })();
     </script>
@@ -75,6 +91,7 @@
             <li class="completed">Explore Bangalore</li>
             <li>Fix THAT bug</li>
         </ol>
+        <div id="divMessages"></div>
     </div>
 </body>
 </html>
