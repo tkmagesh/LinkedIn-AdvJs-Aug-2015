@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <script>
+    /*Use cases*/
+    /*
+    1. Manage a list of tasks
+    2. Add a new task
+    3. Toggle the completion status of one or more tasks
+    4. Remove completed tasks
+    5. Persist the task in the local storage
+
+    window.localStorage
+        key/value store
+        both key and value should be strings
+
+        apis
+            - setItem(key, value)
+            - getItem(key) //=> value
+            - removeItem(key)
+            - key(index) // => key at index
+            - clear()
+            - length
+
+    */
+    </script>
+    <style>
+        .completed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        li{
+            cursor: pointer;
+        }
+        #divMessages{
+            position: absolute;
+            bottom: 0px;
+            right : 0px;
+            padding: 10px;
+        }
+        .message{
+            border : 1px solid gray;
+            background-color: #e7e7e7;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="jquery-1.11.3.js"></script>
+    <script>
+    (function(){
+        var maxTaskId = 0;
+        $(function init(){
+            $("#btnAddTask").on("click", onBtnAddTaskClick);
+            $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
+            //$("#olTaskList").delegate("li","click",onTaskItemClick);
+            $("#olTaskList").on("click","li",onTaskItemClick);
+        })
+        function onBtnAddTaskClick(){
+            var taskName = $("#txtTask").val();
+            window.localStorage.setItem(++maxTaskId, taskName);
+            $("<li></li>")
+                .html(taskName)
+                .attr("data-task-id", maxTaskId)
+                .prependTo("#olTaskList")
+                .hide()
+                .slideDown('slow');
+            displayMessage("A new task is added");
+        }
+        function onTaskItemClick(evt){
+            $(this).toggleClass("completed");
+        }
+
+        function onBtnRemoveCompletedClick(){
+            $("#olTaskList > li.completed").fadeOut(function(){
+                var $this = $(this);
+                var taskId = $this.attr("data-task-id");
+                window.localStorage.removeItem(taskId);
+                $(this).remove();
+            });
+            displayMessage("Zero or more completed tasks are removed");
+        }
+        function displayMessage(msg){
+            $("<div class='message'></div>")
+                .html(msg)
+                .hide()
+                .appendTo("#divMessages")
+                .slideDown('slow')
+                .delay(3000)
+                .fadeOut('fast', function(){
+                    $(this).remove();
+                });
+        }
+    })();
+    </script>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <div class="completed">10</div>
+    <div class="content">
+        <label for="">Task :</label>
+        <input type="text" name="" id="txtTask">
+        <input type="button" value="Add Task" id="btnAddTask">
+        <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+        <ol id="olTaskList">
+
+        </ol>
+        <div id="divMessages"></div>
+    </div>
+</body>
+</html>
