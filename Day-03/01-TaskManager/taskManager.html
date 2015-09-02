@@ -58,18 +58,21 @@
             var result = [];
             for(var i=0; i<storage.length; i++){
                 var taskId = parseInt(storage.key(i));
-                //maxTaskId = maxTaskId < taskId ? taskId : maxTaskId;
-                var taskName = storage.getItem(taskId);
-                var task = { id : taskId, name : taskName};
+                var task = JSON.parse(storage.getItem(taskId));
                 result.push(task);
             }
             return result;
         }
         function saveTask(taskName){
             var id = Date.now();
-            storage.setItem(id, taskName);
-            var newTask = {id : id, name :taskName};
+            var newTask = {id : id, name :taskName, isCompleted : false};
+            storage.setItem(id, JSON.stringify(newTask));
             return newTask;
+        }
+        function toggle(id){
+            var task = JSON.parse(storage.getItem(id));
+            task.isCompleted = !task.isCompleted;
+            storage.setItem(task.id, JSON.stringify(task));
         }
         function removeTask(id){
             storage.removeItem(id);
@@ -77,7 +80,8 @@
         return {
             getAll : getAllTasks,
             save : saveTask,
-            remove : removeTask
+            remove : removeTask,
+            toggle : toggle
         }
     }
 
@@ -109,11 +113,14 @@
                 .html(task.name)
                 .attr("data-task-id", task.id)
                 .prependTo("#olTaskList")
+                .addClass(task.isCompleted ? "completed" : "")
                 .hide()
                 .slideDown('slow');
         }
         function onTaskItemClick(evt){
-            $(this).toggleClass("completed");
+            var $this = $(this);
+            $this.toggleClass("completed");
+            taskStorage.toggle($this.attr("data-task-id"));
         }
 
         function onBtnRemoveCompletedClick(){
