@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "Explore Bangalore",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": 2,
@@ -13,7 +13,7 @@
     {
       "id": 3,
       "name": "Fix THAT bug",
-      "isCompleted": true
+      "isCompleted": false
     },
     {
       "id": 4,
@@ -24,6 +24,36 @@
       "name": "Learn server communication",
       "isCompleted": false,
       "id": 5
+    },
+    {
+      "name": "",
+      "isCompleted": false,
+      "id": 6
+    },
+    {
+      "name": "sadfsdfdas",
+      "isCompleted": false,
+      "id": 7
+    },
+    {
+      "name": "sdajflf",
+      "isCompleted": false,
+      "id": 8
+    },
+    {
+      "name": "sdajflf",
+      "isCompleted": true,
+      "id": 9
+    },
+    {
+      "name": "sdajflf fddas",
+      "isCompleted": false,
+      "id": 10
+    },
+    {
+      "name": "sdajflf fddaszdv sadfs",
+      "isCompleted": true,
+      "id": 11
     }
   ]
 }

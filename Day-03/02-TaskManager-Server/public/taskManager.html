@@ -53,12 +53,24 @@
     <script src="jquery-1.11.3.js"></script>
     <script src="handlebars-v4.0.0.js"></script>
     <script>
-
+    function getTaskService(){
+        function getAllTasks(callback){
+            $.get("/tasks", function(data){
+                var viewData = {tasks : data};
+                callback(viewData);
+            }, "json");
+        }
+        return {
+            getAll : getAllTasks
+        }
+    }
 
     (function(){
-        //var taskStorage = getTaskStorage();
+        var taskService = getTaskService();
         $(function init(){
-            $("#btnAddTask").on("click", onBtnAddTaskClick);
+            //$("#btnAddTask").on("click", onBtnAddTaskClick);
+            document.getElementById("btnAddTask")
+                .addEventListener("click", onBtnAddTaskClick);
             $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
             //$("#olTaskList").delegate("li","click",onTaskItemClick);
             $("#olTaskList").on("click","li",onTaskItemClick);
@@ -66,16 +78,15 @@
         })
 
         function loadTasksFromServer(){
-            $.get("/taskList.template.html", function(response){
-                var templateHTML = response;
-                var templateFn = Handlebars.compile(templateHTML);
-                $.get("/tasks", function(data){
-                    var viewData = {tasks : data};
+            taskService.getAll(function(viewData){
+                $.get("/taskList.template.html", function(response){
+                    var templateHTML = response;
+                    var templateFn = Handlebars.compile(templateHTML);
                     var generatedHTML = templateFn(viewData);
-                    console.log(generatedHTML);
                     $("#olTaskList").append(generatedHTML);
-                }, "json");
-            }, "html");
+                }, "html");
+            })
+
         }
 
         function onBtnAddTaskClick(){

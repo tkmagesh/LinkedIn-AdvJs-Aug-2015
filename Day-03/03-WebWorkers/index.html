@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Workers</title>
+    <script>
+    (function(){
+
+        window.addEventListener("DOMContentLoaded", init);
+        var worker = null;
+        function init(){
+            var btnFindPrimes =document.getElementById("btnFindPrimes");
+            btnFindPrimes.addEventListener("click", onBtnFindPrimes);
+
+            worker = new Worker("primeFinderWorker.js")
+            worker.addEventListener("message", onWorkerMessage);
+        }
+
+        function onWorkerMessage(evtArg){
+            var result = evtArg.data;
+            if (result.type === 'progress'){
+                document.getElementById("workProgress").value = result.percentCompleted;
+            } else {
+                displayMessage(result.primeCount + " prime numbers are found");
+            }
+
+        }
+
+        function onBtnFindPrimes(){
+            var start = document.getElementById("txtStart").value * 1,
+                end = document.getElementById("txtEnd").value * 1;
+            var msg = {
+                start : start,
+                end : end
+            };
+            worker.postMessage(msg);
+        }
+
+        function displayMessage(msg){
+            document.getElementById("divMessage").innerHTML = msg;
+        }
+    })();
+    </script>
+</head>
+<body>
+    <input type="text" name="" id="txtStart">
+    <input type="text" name="" id="txtEnd">
+    <input type="button" value="Find Primes" id="btnFindPrimes">
+    <progress id="workProgress" min="0" max="100" value="0"></progress>
+    <div id="divMessage"></div>
+</body>
+</html>
