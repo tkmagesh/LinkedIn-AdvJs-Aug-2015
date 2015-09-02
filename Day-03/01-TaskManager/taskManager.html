@@ -51,24 +51,66 @@
     </style>
     <script src="jquery-1.11.3.js"></script>
     <script>
+    function getTaskStorage(){
+        //var maxTaskId = 0;
+        var storage = window.localStorage;
+        function getAllTasks(){
+            var result = [];
+            for(var i=0; i<storage.length; i++){
+                var taskId = parseInt(storage.key(i));
+                //maxTaskId = maxTaskId < taskId ? taskId : maxTaskId;
+                var taskName = storage.getItem(taskId);
+                var task = { id : taskId, name : taskName};
+                result.push(task);
+            }
+            return result;
+        }
+        function saveTask(taskName){
+            var id = Date.now();
+            storage.setItem(id, taskName);
+            var newTask = {id : id, name :taskName};
+            return newTask;
+        }
+        function removeTask(id){
+            storage.removeItem(id);
+        }
+        return {
+            getAll : getAllTasks,
+            save : saveTask,
+            remove : removeTask
+        }
+    }
+
     (function(){
-        var maxTaskId = 0;
+        var taskStorage = getTaskStorage();
         $(function init(){
             $("#btnAddTask").on("click", onBtnAddTaskClick);
             $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
             //$("#olTaskList").delegate("li","click",onTaskItemClick);
             $("#olTaskList").on("click","li",onTaskItemClick);
+            loadTasksFromStorage();
         })
+
+        function loadTasksFromStorage(){
+
+            taskStorage.getAll().forEach(function(task){
+                addTaskToList(task);
+            })
+        }
+
         function onBtnAddTaskClick(){
             var taskName = $("#txtTask").val();
-            window.localStorage.setItem(++maxTaskId, taskName);
-            $("<li></li>")
-                .html(taskName)
-                .attr("data-task-id", maxTaskId)
+            var newTask = taskStorage.save(taskName);
+            addTaskToList(newTask);
+            displayMessage("A new task is added");
+        }
+        function addTaskToList(task){
+             $("<li></li>")
+                .html(task.name)
+                .attr("data-task-id", task.id)
                 .prependTo("#olTaskList")
                 .hide()
                 .slideDown('slow');
-            displayMessage("A new task is added");
         }
         function onTaskItemClick(evt){
             $(this).toggleClass("completed");
@@ -78,7 +120,7 @@
             $("#olTaskList > li.completed").fadeOut(function(){
                 var $this = $(this);
                 var taskId = $this.attr("data-task-id");
-                window.localStorage.removeItem(taskId);
+                taskStorage.remove(taskId);
                 $(this).remove();
             });
             displayMessage("Zero or more completed tasks are removed");
