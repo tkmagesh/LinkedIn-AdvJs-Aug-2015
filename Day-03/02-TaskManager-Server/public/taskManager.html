@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <script>
+    /*Use cases*/
+    /*
+    1. Manage a list of tasks
+    2. Add a new task
+    3. Toggle the completion status of one or more tasks
+    4. Remove completed tasks
+    5. Persist the task in the local storage
+
+    window.localStorage
+        key/value store
+        both key and value should be strings
+
+        apis
+            - setItem(key, value)
+            - getItem(key) //=> value
+            - removeItem(key)
+            - key(index) // => key at index
+            - clear()
+            - length
+
+    */
+    </script>
+    <style>
+        .completed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        li{
+            cursor: pointer;
+        }
+        #divMessages{
+            position: absolute;
+            bottom: 0px;
+            right : 0px;
+            padding: 10px;
+        }
+        .message{
+            border : 1px solid gray;
+            background-color: #e7e7e7;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+    </style>
+    <script src="jquery-1.11.3.js"></script>
+    <script src="handlebars-v4.0.0.js"></script>
+    <script>
+
+
+    (function(){
+        //var taskStorage = getTaskStorage();
+        $(function init(){
+            $("#btnAddTask").on("click", onBtnAddTaskClick);
+            $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
+            //$("#olTaskList").delegate("li","click",onTaskItemClick);
+            $("#olTaskList").on("click","li",onTaskItemClick);
+            loadTasksFromServer();
+        })
+
+        function loadTasksFromServer(){
+            $.get("/taskList.template.html", function(response){
+                var templateHTML = response;
+                var templateFn = Handlebars.compile(templateHTML);
+                $.get("/tasks", function(data){
+                    var viewData = {tasks : data};
+                    var generatedHTML = templateFn(viewData);
+                    console.log(generatedHTML);
+                    $("#olTaskList").append(generatedHTML);
+                }, "json");
+            }, "html");
+        }
+
+        function onBtnAddTaskClick(){
+            var taskName = $("#txtTask").val();
+            var task = {
+                name : taskName,
+                isCompleted : false
+            };
+            $.post("/tasks", task, function(data){
+                addTaskToList(data);
+                displayMessage("A new task is added");
+            }, "json")
+
+        }
+        function addTaskToList(task){
+             $("<li></li>")
+                .html(task.name)
+                .attr("data-task-id", task.id)
+                .prependTo("#olTaskList")
+                .addClass(task.isCompleted ? "completed" : "")
+                .hide()
+                .slideDown('slow');
+        }
+        function onTaskItemClick(evt){
+            var $this = $(this);
+            $.ajax({
+                url : "/tasks/" + $this.attr("data-task-id"),
+                method : 'PATCH',
+                data : JSON.stringify({isCompleted : !$this.hasClass('completed')}),
+                dataType : 'json',
+                contentType : 'application/json',
+                success : function(){
+                    $this.toggleClass("completed");
+                }
+            })
+
+        }
+
+        function onBtnRemoveCompletedClick(){
+            $("#olTaskList > li.completed").fadeOut(function(){
+                var $this = $(this);
+                var taskId = $this.attr("data-task-id");
+                taskStorage.remove(taskId);
+                $(this).remove();
+            });
+            displayMessage("Zero or more completed tasks are removed");
+        }
+        function displayMessage(msg){
+            $("<div class='message'></div>")
+                .html(msg)
+                .hide()
+                .appendTo("#divMessages")
+                .slideDown('slow')
+                .delay(3000)
+                .fadeOut('fast', function(){
+                    $(this).remove();
+                });
+        }
+    })();
+    </script>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <div class="completed">10</div>
+    <div class="content">
+        <label for="">Task :</label>
+        <input type="text" name="" id="txtTask">
+        <input type="button" value="Add Task" id="btnAddTask">
+        <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+        <ol id="olTaskList">
+
+        </ol>
+        <div id="divMessages"></div>
+    </div>
+</body>
+</html>

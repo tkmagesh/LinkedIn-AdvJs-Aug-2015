@@ -1,0 +1,9 @@
+<h3>List</h3>
+           <hr>
+            {{#each tasks}}
+                {{#if isCompleted}}
+                    <li class="completed" data-task-id="{{id}}">{{name}}</li>
+                {{else}}
+                     <li data-task-id="{{id}}">{{name}}</li>
+                {{/if}}
+            {{/each}}
